@@ -26,8 +26,6 @@ Use a Browser on your local machine to go to:
 localhost:${port}  (prefix w/ https:// if using password)
 "
 
-cd /group/pawsey0001/mshaikh/Training_material/DASK_workshop_Apr_2019/dask-tutorial
-
 # Run Jupyter
 jupyter-notebook --no-browser --port=${port} --ip=${node}
 
