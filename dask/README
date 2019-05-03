@@ -1,0 +1,13 @@
+- The Jupyter notebooks included in this repository are modified version of dask/dask-tutorial available on GitHub.com
+
+- Software requirement:
+    - python3
+    - numpy
+    - pandas
+    - h5py
+    - dask
+    - scikit-image
+    - jupyter notebook
+
+- To generate the input data required for the notebooks, run "python prep.py". 
+
