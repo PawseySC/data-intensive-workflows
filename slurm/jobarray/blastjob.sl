@@ -17,6 +17,6 @@ cp ../${SLURM_ARRAY_TASK_ID}.fasta .
 cp ../zebrafish.1.protein.faa .
 
 # Make Blast Zebrafish DB
-srun makeblastdb -in zebrafish.1.protein.faa -dbtype prot
+srun --export=ALL makeblastdb -in zebrafish.1.protein.faa -dbtype prot
 # Run Blast comparison
-srun blastp -query ${SLURM_ARRAY_TASK_ID}.fasta -db zebrafish.1.protein.faa -out results.txt
+srun --export=ALL blastp -query ${SLURM_ARRAY_TASK_ID}.fasta -db zebrafish.1.protein.faa -out results.txt

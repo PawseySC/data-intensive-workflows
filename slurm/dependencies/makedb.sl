@@ -7,4 +7,4 @@
 module load blast+
 
 # Make Blast Zebrafish DB
-srun makeblastdb -in zebrafish.1.protein.faa -dbtype prot
+srun --export=all makeblastdb -in zebrafish.1.protein.faa -dbtype prot

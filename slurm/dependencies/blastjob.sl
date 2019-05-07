@@ -16,4 +16,4 @@ cd $TASKDIR
 cp ../${SLURM_ARRAY_TASK_ID}.fasta .
 
 # Run Blast comparison
-srun blastp -query ${SLURM_ARRAY_TASK_ID}.fasta -db ../zebrafish.1.protein.faa -out results.txt
+srun --export=ALL blastp -query ${SLURM_ARRAY_TASK_ID}.fasta -db ../zebrafish.1.protein.faa -out results.txt
