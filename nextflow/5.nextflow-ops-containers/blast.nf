@@ -26,7 +26,7 @@
  * Defines the pipeline inputs parameters (giving a default value for each for them) 
  * Each of the following parameters can be specified as command line options
  */
-params.in = "$baseDir/data/sample.fa"
+params.query = "$baseDir/data/sample.fa"
 params.db = "$baseDir/db/pdb/tiny"
 params.chunkSize = 2
 params.outdir = "."
@@ -40,7 +40,7 @@ db_path = file(params.db).parent
  * Finally assign the result channel to the variable 'fasta' 
  */
 Channel
-    .fromPath(params.in)
+    .fromPath(params.query)
     .map{ it -> [ it.name, it ] }
     .splitFasta( by: params.chunkSize, elem: 1, file: true )
     .set { fasta }
