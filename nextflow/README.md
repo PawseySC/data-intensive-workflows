@@ -7,7 +7,7 @@ whereas examples 4-7 have the required files to run Nextflow pipelines:
 pipeline (`.nf`) scripts, configuration (`nextflow.config`) scripts, sample input data.
 
 All of these subdirectories also contain bash scripts (`.sh`) reproducing the commands shown during the live demo.
-Scripts containing the `-shifter` suffix need to be run on a HPC system with Shifter installed.
+Scripts containing the `-zeus` suffix need to be run on the Zeus cluster at Pawsey.
 
 Notably, some Nextflow examples are adapted from existing tutorial pipelines:
 * example 5 : <https://github.com/nextflow-io/blast-example>
