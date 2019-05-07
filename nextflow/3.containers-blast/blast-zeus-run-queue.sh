@@ -1,10 +1,10 @@
 #!/bin/bash --login
   
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --account=pawsey0001
-#SBATCH --reservation=
 #SBATCH --job-name=Container_BLAST
+#SBATCH --account=
+#SBATCH --reservation=
+#SBATCH --partition=workq
+#SBATCH --ntasks=1
 #SBATCH --time=00:05:00
 #SBATCH --export=NONE
 
