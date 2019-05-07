@@ -1,8 +1,8 @@
 #!/bin/bash --login
   
 #SBATCH --job-name=Container_BLAST
-#SBATCH --account=
-#SBATCH --reservation=
+#SBATCH --account=pawsey0001
+#SBATCH --reservation=DSW
 #SBATCH --partition=workq
 #SBATCH --ntasks=1
 #SBATCH --time=00:05:00

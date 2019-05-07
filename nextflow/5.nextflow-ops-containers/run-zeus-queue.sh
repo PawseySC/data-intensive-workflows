@@ -1,8 +1,8 @@
 #!/bin/bash -l
 
-#SBATCH --job-name=Nextflow-master
+#SBATCH --job-name=Nextflow-master-BLAST
 #SBATCH --account=pawsey0001
-#SBATCH --reservation=
+#SBATCH --reservation=DSW
 #SBATCH --partition=workq
 #SBATCH --ntasks=1
 #SBATCH --time=00:30:00
