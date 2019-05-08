@@ -8,3 +8,5 @@
 #SBATCH --time=00:30:00
 
 nextflow -C zeus.config run blast.nf -profile zeus,reservation
+
+ls -ltr
