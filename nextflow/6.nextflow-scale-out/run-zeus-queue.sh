@@ -5,6 +5,6 @@
 #SBATCH --reservation=DSW
 #SBATCH --partition=workq
 #SBATCH --ntasks=1
-#SBATCH --time=02:00:00
+#SBATCH --time=00:30:00
  
-nextflow run rnaseq.nf
+nextflow run rnaseq.nf -profile zeus
