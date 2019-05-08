@@ -7,6 +7,9 @@
 # Load Blast+ module
 module load blast+
 
+# Download file
+./download.sh
+
 # Make Blast DB
 makeblastdb -in zebrafish.1.protein.faa -dbtype prot
 
