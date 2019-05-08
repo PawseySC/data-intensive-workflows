@@ -1,7 +1,7 @@
 #!/bin/bash
-FIRST=$(sbatch download.sl | cut -f 4 -d' ')
-echo $FIRST submitted
-SECOND=$(sbatch -d afterok:$FIRST makedb.sl | cut -f 4 -d' ')
-echo $SECOND submitted
-THIRD=$(sbatch -d afterok:$SECOND blastarray.sl | cut -f 4 -d' ')
-echo $THIRD submitted
+DOWNLOAD=$(sbatch download.sl | cut -f 4 -d' ')
+echo $DOWNLOAD submitted
+MAKEDB=$(sbatch -d afterok:$DOWNLOAD makedb.sl | cut -f 4 -d' ')
+echo $MAKEDB submitted
+BLASTARRAY=$(sbatch -d afterok:$MAKEDB blastarray.sl | cut -f 4 -d' ')
+echo $BLASTARRAY submitted
