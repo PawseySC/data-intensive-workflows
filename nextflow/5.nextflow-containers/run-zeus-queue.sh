@@ -7,4 +7,4 @@
 #SBATCH --ntasks=1
 #SBATCH --time=00:30:00
 
-nextflow -C zeus.config run blast.nf -profile zeus
+nextflow -C zeus.config run blast.nf -profile zeus,reservation
