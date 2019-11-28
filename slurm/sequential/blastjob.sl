@@ -1,6 +1,7 @@
 #!/bin/bash -l
-#SBATCH -n 1 
-#SBATCH -A pawsey0001
+#SBATCH --reservation=courseq
+#SBATCH -A courses01
+#SBATCH -n 1
 #SBATCH -t 00:05:00
 #SBATCH --export=NONE
 

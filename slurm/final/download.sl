@@ -2,7 +2,7 @@
 #SBATCH -n 1 
 #SBATCH -p copyq
 #SBATCH -M zeus
-#SBATCH -A pawsey0001
+#SBATCH -A courses01
 #SBATCH -t 00:05:00
 #SBATCH --export=NONE
 
