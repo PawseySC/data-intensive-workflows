@@ -31,5 +31,6 @@ process convertToUpper {
 }
 
 result.subscribe {
-    println it.trim()
+    log.info(it.trim())
+//    println it.trim()
 }
