@@ -20,7 +20,9 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Nextflow.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
+nextflow.enable.dsl = 2
+
 
 // input parameters
 params.query = "$baseDir/data/sample.fa"
@@ -30,21 +32,14 @@ params.chunkSize = 2
 params.outdir = "."
 
 
-Channel
-    .fromPath(params.query)
-    .map{ it -> [ it.name, it ] }
-    .splitFasta( by: params.chunkSize, elem: 1, file: true )
-    .set { fasta }
-
-
 // process definitions
 
 process blast {
     input:
-    set name, file('query.fa') from fasta
+    tuple val(name), path('query.fa')
 
     output:
-    set name, file('top_hits') into top_hits
+    tuple val(name), path('top_hits')
 
     script:
     """
@@ -55,10 +50,10 @@ process blast {
 
 process extract {
     input:
-    set name, file('top_hits') from top_hits
+    tuple val(name), path('top_hits')
 
     output:
-    set name, file('sequences') into sequences
+    tuple val(name), path('sequences')
 
     script:
     """
@@ -66,10 +61,19 @@ process extract {
     """
 }
 
-/* 
- * Collects all the sequences files into a single file 
- * and stores it in the output directory when complete
- */ 
-sequences
-    .collectFile()
-    .subscribe{ it.copyTo( "${params.outdir}/${it.baseName}.out" ) }
+
+// workflow definition
+workflow {
+
+    fasta = Channel.fromPath(params.query)
+                   .map{ it -> [ it.name, it ] }
+                   .splitFasta( by: params.chunkSize, elem: 1, file: true )
+
+    blast( fasta )
+    extract( blast.out )
+
+    extract.out
+           .collectFile()
+           .subscribe{ it.copyTo( "${params.outdir}/${it.baseName}.out" ) }
+
+}
