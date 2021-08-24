@@ -10,7 +10,6 @@
  *
  */
 
-
 /*
  * Proof of concept of a RNAseq pipeline implemented with Nextflow
  *
@@ -20,16 +19,15 @@
  * - Evan Floden <evanfloden@gmail.com>
  */
 
+nextflow.enable.dsl = 2
 
-/*
- * Default pipeline parameters. They can be overriden on the command line eg.
- * given `params.foo` specify on the run command line `--foo some_value`.
- */
 
+// input parameters
 params.reads = "$baseDir/data/ggal/*_{1,2}.fq"
+//
 params.transcriptome = "$baseDir/data/ggal/ggal_1_48850000_49020000.Ggal71.500bpflank.fa"
-params.outdir = "results"
 params.multiqc = "$baseDir/multiqc"
+params.outdir = "results"
 
 log.info """\
  R N A S E Q - N F   P I P E L I N E
@@ -40,45 +38,20 @@ log.info """\
  """
 
 
-transcriptome_file = file(params.transcriptome)
-multiqc_file = file(params.multiqc)
-
-
-Channel
-    .fromFilePairs( params.reads )
-    .ifEmpty { error "Cannot find any reads matching: ${params.reads}" }
-    .into { read_pairs_ch; read_pairs2_ch }
-
+// process definitions
 
 process index {
     tag "$transcriptome.simpleName"
 
     input:
-    file transcriptome from transcriptome_file
+    path(transcriptome)
 
     output:
-    file 'index' into index_ch
+    path('index')
 
     script:
     """
     salmon index --threads $task.cpus -t $transcriptome -i index
-    """
-}
-
-
-process quant {
-    tag "$pair_id"
-
-    input:
-    file index from index_ch
-    set pair_id, file(reads) from read_pairs_ch
-
-    output:
-    file(pair_id) into quant_ch
-
-    script:
-    """
-    salmon quant --threads $task.cpus --libType=U -i $index -1 ${reads[0]} -2 ${reads[1]} -o $pair_id
     """
 }
 
@@ -87,10 +60,10 @@ process fastqc {
     publishDir params.outdir
 
     input:
-    set sample_id, file(reads) from read_pairs2_ch
+    tuple val(sample_id), path(reads)
 
     output:
-    file("fastqc_${sample_id}_logs") into fastqc_ch
+    path("fastqc_${sample_id}_logs")
 
 
     script:
@@ -100,16 +73,31 @@ process fastqc {
     """
 }
 
+process quant {
+    tag "$pair_id"
+
+    input:
+    path(index)
+    tuple val(pair_id), path(reads)
+
+    output:
+    path(pair_id)
+
+    script:
+    """
+    salmon quant --threads $task.cpus --libType=U -i $index -1 ${reads[0]} -2 ${reads[1]} -o $pair_id
+    """
+}
 
 process multiqc {
     publishDir params.outdir, mode:'copy'
 
     input:
-    file('*') from quant_ch.mix(fastqc_ch).collect()
-    file(config) from multiqc_file
+    path('*')
+    path(config)
 
     output:
-    file('multiqc_report.html')
+    path('multiqc_report.html')
 
     script:
     """
@@ -119,6 +107,23 @@ process multiqc {
     """
 }
 
+
+// workflow definition
+
+workflow {
+
+    read_pairs = Channel.fromFilePairs( params.reads, checkIfExists: true )
+
+    index( params.transcriptome )
+    fastqc( read_pairs )
+    quant( index.out, read_pairs )
+    multiqc( quant.out
+                  .concat(fastqc.out)
+                  .collect() ,
+             params.multiqc )
+
+}
+
 workflow.onComplete {
-	log.info ( workflow.success ? "\nDone! Open the following report in your browser --> $params.outdir/multiqc_report.html\n" : "Oops .. something went wrong" )
+	log.info ( workflow.success ? "\nDone! Open the following report in your browser --> ${params.outdir}/multiqc_report.html\n" : "Oops .. something went wrong" )
 }

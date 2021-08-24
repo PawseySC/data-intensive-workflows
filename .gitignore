@@ -1,0 +1,6 @@
+*.vscode
+.nextflow
+.nextflow.log*
+work/
+sample*.out
+results/

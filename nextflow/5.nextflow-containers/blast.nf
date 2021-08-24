@@ -20,71 +20,60 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Nextflow.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
 
-/*
- * Defines the pipeline inputs parameters (giving a default value for each for them) 
- * Each of the following parameters can be specified as command line options
- */
+nextflow.enable.dsl = 2
+
+
+// input parameters
 params.query = "$baseDir/data/sample.fa"
+//
 params.db = "$baseDir/db/pdb/tiny"
 params.chunkSize = 2
 params.outdir = "."
 
-db_name = file(params.db).name
-db_path = file(params.db).parent
 
-/* 
- * Given the query parameter creates a channel emitting the query fasta file(s), 
- * the file is split in chunks containing as many sequences as defined by the parameter 'chunkSize'.
- * Finally assign the result channel to the variable 'fasta' 
- */
-Channel
-    .fromPath(params.query)
-    .map{ it -> [ it.name, it ] }
-    .splitFasta( by: params.chunkSize, elem: 1, file: true )
-    .set { fasta }
+// process definitions
 
-/* 
- * Executes a BLAST job for each chunk emitted by the 'fasta' channel 
- * and creates as output a channel named 'top_hits' emitting the resulting 
- * BLAST matches  
- */
 process blast {
     input:
-    set name, file('query.fa') from fasta
-    file db_path
+    tuple val(name), path('query.fa')
 
     output:
-    set name, file('top_hits') into top_hits
+    tuple val(name), path('top_hits')
 
+    script:
     """
-    blastp -db $db_path/$db_name -query query.fa -outfmt 6 > blast_result
+    blastp -db ${params.db} -query query.fa -outfmt 6 > blast_result
     cat blast_result | head -n 10 | cut -f 2 > top_hits
     """
 }
 
-/* 
- * Each time a file emitted by the 'top_hits' channel an extract job is executed 
- * producing a file containing the matching sequences 
- */
 process extract {
     input:
-    set name, file('top_hits') from top_hits
-    file db_path
+    tuple val(name), path('top_hits')
 
     output:
-    set name, file('sequences') into sequences
+    tuple val(name), path('sequences')
 
+    script:
     """
-    blastdbcmd -db $db_path/$db_name -entry_batch top_hits | head -n 10 > sequences
+    blastdbcmd -db ${params.db} -entry_batch top_hits | head -n 10 > sequences
     """
 }
 
-/* 
- * Collects all the sequences files into a single file 
- * and stores it in the output directory when complete
- */ 
-sequences
-    .collectFile()
-    .subscribe{ it.copyTo( "${params.outdir}/${it.baseName}.out" ) }
+
+// workflow definition
+workflow {
+
+    fasta = Channel.fromPath(params.query)
+                   .map{ it -> [ it.name, it ] }
+                   .splitFasta( by: params.chunkSize, elem: 1, file: true )
+
+    blast( fasta )
+    extract( blast.out )
+
+    extract.out
+           .collectFile()
+           .subscribe{ it.copyTo( "${params.outdir}/${it.baseName}.out" ) }
+
+}

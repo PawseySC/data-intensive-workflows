@@ -1,5 +1,7 @@
 ## Scale out containerized workflow pipelines using Nextflow
 
+**EDIT** in August 2021: these materials have been updated, to use Singularity for the HPC container examples, and DSL 2 for the Nextflow examples.
+
 Subdirectories in this path contain the required files to run container and Nextflow examples.
 
 In particular, example 2 has a `Dockerfile` to build a Docker container, 

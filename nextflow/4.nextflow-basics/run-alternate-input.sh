@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nextflow run string.nf --str 'great day in perth!'
+nextflow run string.nf --str 'Great day in Perth!'

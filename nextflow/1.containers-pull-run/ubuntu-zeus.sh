@@ -1,7 +1,7 @@
 #!/bin/bash
 
-module load shifter
+module load singularity
 
-shifter pull ubuntu:18.04
+singularity pull docker://ubuntu:18.04
 
-shifter run ubuntu:18.04 cat /etc/os-release
+singularity exec ubuntu_18.04.sif cat /etc/os-release

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-module load shifter
+module load singularity
 
-shifter pull marcodelapierre/gcc:190501
+singularity pull docker://marcodelapierre/gcc:190501
