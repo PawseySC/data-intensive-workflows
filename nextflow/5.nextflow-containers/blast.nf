@@ -26,7 +26,7 @@ nextflow.enable.dsl = 2
 
 // input parameters
 params.query = "$baseDir/data/sample.fa"
-
+//
 params.db = "$baseDir/db/pdb/tiny"
 params.chunkSize = 2
 params.outdir = "."

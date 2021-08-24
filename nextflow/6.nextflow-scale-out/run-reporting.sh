@@ -1,5 +1,5 @@
 #!/bin/bash
 
-nextflow run rnaseq.nf -with-timeline -with-report -with-dag
+nextflow run rnaseq.nf -profile nimbus -with-timeline -with-report -with-dag
 
 dot -Tpng dag.dot > dag.png
