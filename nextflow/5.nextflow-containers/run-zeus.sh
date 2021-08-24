@@ -1,5 +1,5 @@
 #!/bin/bash
 
-nextflow -C zeus.config run blast.nf -profile zeus,reservation
+nextflow run blast.nf -profile zeus
 
 ls -ltr

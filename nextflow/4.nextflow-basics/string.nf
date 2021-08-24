@@ -2,8 +2,11 @@
 nextflow.enable.dsl = 2
 
 
+// input parameters
 params.str = 'Hello world!'
 
+
+// process definitions
 
 process splitLetters {
 
@@ -13,6 +16,7 @@ process splitLetters {
     output:
     path('chunk_*')
 
+    script:
     """
     echo $string | xargs -n 1 | split -l 1 - chunk_
     """
@@ -26,12 +30,14 @@ process convertToUpper {
     output:
     stdout
 
+    script:
     """
     cat inp | tr '[a-z]' '[A-Z]'
     """
 }
 
 
+// workflow definition
 workflow {
 
     // get input
