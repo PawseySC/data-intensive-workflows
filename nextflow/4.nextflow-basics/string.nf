@@ -1,36 +1,47 @@
 #!/usr/bin/env nextflow
+nextflow.enable.dsl = 2
+
 
 params.str = 'Hello world!'
 
-text = Channel.from( params.str )
 
 process splitLetters {
 
     input:
-    val string from text
+    val(string)
 
     output:
-    stdout word into letters mode flatten
+    path('chunk_*')
 
     """
-    echo $string | xargs -n 1
+    echo $string | xargs -n 1 | split -l 1 - chunk_
     """
 }
 
 process convertToUpper {
 
     input:
-    stdin word from letters
+    path('inp')
 
     output:
-    stdout result
+    stdout
 
     """
-    cat - | tr '[a-z]' '[A-Z]'
+    cat inp | tr '[a-z]' '[A-Z]'
     """
 }
 
-result.subscribe {
-    log.info(it.trim())
-//    println it.trim()
+
+workflow {
+
+    // get input
+    text = channel.of( params.str )
+
+    // pipeline
+    splitLetters( text )
+    convertToUpper( splitLetters.out.flatten() )
+
+    // visualise output
+    convertToUpper.out.view{ it.trim() }
+
 }
